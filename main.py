@@ -167,16 +167,15 @@ def drawMouthSurprised(screen, center, color):
     pygame.draw.circle(screen, color, (center[0], center[1]+100+radius), radius, 4)
 
 
-
-def talk(screen, center, color):
+def talk(screen, center, color, screenColor):
     frequency = random.random()
     halfLength = 250
-    points = [(center[0]-halfLength, center[1]+150)]
+    points = []
     for x in range(int(center[0] - halfLength), int(center[0] + halfLength), 5):
         amplitude = random.randint(10, 50)
         y = int(amplitude * math.sin(frequency * x) + center[1] + 150)
         points.append((x, y))
-    deleteMouth(screen, center)
+    deleteMouth(screen, center, screenColor)
     pygame.draw.lines(screen, color, False, points, 4)
 
 
@@ -184,6 +183,17 @@ def blink(screen, open, center, color):
     if open:
         deleteEyes(screen, center, WHITE)
         drawLineEyes(screen, center, color, 4)
+        return False
+    else:
+        deleteEyes(screen, center, WHITE)
+        drawCircleEyes(screen, center, BLACK, 4)
+        return True
+
+
+def blinkVertical(screen, open, center, color):
+    if open:
+        deleteEyes(screen, center, WHITE)
+        drawVerticalLineEyes(screen, center, color, 4)
         return False
     else:
         deleteEyes(screen, center, WHITE)
@@ -203,7 +213,6 @@ def blinkFrog(screen, open, center, color):
         return True
 
 
-
 def blinkAngry(screen, open, center, color):
     if open:
         deleteEyes(screen, center, WHITE)
@@ -215,22 +224,59 @@ def blinkAngry(screen, open, center, color):
         return True
 
 
-def changeMouth(screen, expression, center, color):
+def changeMouth(screen, expression, center, color, screenColor):
     if expression.lower() == "happy":
-        deleteMouth(screen, center)
+        deleteMouth(screen, center, screenColor)
         drawMouthHappy(screen, center, color)
     elif expression.lower() == "sad":
-        deleteMouth(screen, center)
+        deleteMouth(screen, center, screenColor)
         drawMouthSad(screen, center, color)
     elif expression.lower() == "angry":
-        deleteMouth(screen, center)
+        deleteMouth(screen, center, screenColor)
         drawMouthAngry(screen, center, color)
     elif expression.lower() == "neutral":
-        deleteMouth(screen, center)
+        deleteMouth(screen, center, screenColor)
         drawMouthNeutral(screen, center, color)
     elif expression.lower() == "frog":
-        deleteMouth(screen, center)
-        drawMouthFrog(screen, center, color)
+        deleteMouth(screen, center, screenColor)
+        drawMouthFrogOriginal(screen, center, color)
+    elif expression.lower() == "surprised":
+        deleteMouth(screen, center, screenColor)
+        drawMouthSurprised(screen, center, color)
+    elif expression.lower() == "upset":
+        deleteMouth(screen, center, screenColor)
+        drawMouthUpset(screen, center, color)
+    elif expression.lower() == "smile":
+        deleteMouth(screen, center, screenColor)
+        drawMouthSmile(screen, center, color)
+    elif expression.lower() == "derpy":
+        deleteMouth(screen, center, screenColor)
+        drawMouthDerpy(screen, center, color)
+
+
+def changeEyes(screen, type, center, color, screenColor, width):
+    if type.lower() == "happy":
+        deleteEyes(screen, center, screenColor)
+        drawCircleEyes(screen, center, color, width)
+    elif type.lower() == "sad":
+        deleteEyes(screen, center, screenColor)
+        drawDeadInsideEyes(screen, center, color, width)
+    elif type.lower() == "angry":
+        deleteEyes(screen, center, screenColor)
+        drawAngryEyes(screen, center, color, width)
+    elif type.lower() == "neutral":
+        deleteEyes(screen, center, screenColor)
+        drawLineEyes(screen, center, color, width)
+    elif type.lower() == "shocked":
+        deleteEyes(screen, center, screenColor)
+        drawShockedEyes(screen, center, color, width)
+    elif type.lower() == "vertical":
+        deleteEyes(screen, center, screenColor)
+        drawVerticalLineEyes(screen, center, color, width)
+
+
+def delete(screen, center, color):
+    pygame.draw.rect(screen, color,(0, 0, center[0]*2, center[1]*2))
 
 
 def deleteEyes(screen, center, color):
@@ -240,9 +286,9 @@ def deleteEyes(screen, center, color):
     pygame.draw.circle(screen, color, (center[0] + gap, center[1] - 100), radius, width)
 
 
-def deleteMouth(screen, center):
-    halfLength = 250
-    pygame.draw.rect(screen, WHITE, (center[0]-halfLength, center[1]+5, halfLength*2, halfLength*3))
+def deleteMouth(screen, center, color):
+    halfLength = 500
+    pygame.draw.rect(screen, color, (center[0]-halfLength, center[1]+5, halfLength*2, halfLength*3))
 
 
 width = 1250
@@ -256,26 +302,140 @@ LIGHTGREEN = (0, 255, 100)
 
 screenCenter = (width/2, height/2)
 
-screen, clock = initWindow(width, height, WHITE)
-expressions = ["Happy", "Angry", "Neutral", "Sad"]
+screenColor = WHITE
+faceColor = BLACK
+
+screen, clock = initWindow(width, height, screenColor)
+
+expressions = [
+    "happy", "sad", "angry", "neutral",
+    "frog", "surprised", "upset", "smile", "derpy"
+]
+eye_types = [
+    "happy", "sad", "angry", "neutral",
+    "shocked", "vertical"
+]
 frequency = .05
+talking = False
+tracker = 0
+talkingSpeed = 5
 i = 0
+j = 0
+eyeWidth = 4
+
+drawCircleEyes(screen, screenCenter, faceColor, eyeWidth)
+drawMouthHappy(screen, screenCenter, faceColor)
+
 running = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-    eyeWidth = 4
-    drawCircleEyes(screen, screenCenter, BLACK, eyeWidth)
-    #open = blink(screen, open, screenCenter, BLACK)
-    #drawMouthHappy(screen, screenCenter, BLACK)
-    if i > 3:
-        i = 0
-    #changeMouth(screen, expressions[i], screenCenter, BLACK)
-    drawMouthDerpy(screen, screenCenter, BLACK)
-    #talk(screen, screenCenter, BLACK)
-    i += 1
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_1:
+                i = 0
+                j = 5
+                delete(screen, screenCenter, screenColor)
+                drawMouthHappy(screen, screenCenter, faceColor)
+                drawVerticalLineEyes(screen, screenCenter, faceColor, eyeWidth)
+            elif event.key == pygame.K_2:
+                i = 1
+                j = 0
+                delete(screen, screenCenter, screenColor)
+                drawMouthSad(screen, screenCenter, faceColor)
+                drawCircleEyes(screen, screenCenter, faceColor, eyeWidth)
+            elif event.key == pygame.K_3:
+                i = 3
+                j = 3
+                delete(screen, screenCenter, screenColor)
+                drawMouthAngry(screen, screenCenter, faceColor)
+                drawAngryEyes(screen, screenCenter, faceColor, eyeWidth)
+            elif event.key == pygame.K_4:
+                i = 5
+                j = 0
+                delete(screen, screenCenter, screenColor)
+                drawMouthFrogOriginal(screen, screenCenter, faceColor)
+                drawCircleEyes(screen, screenCenter, faceColor, eyeWidth)
+            elif event.key == pygame.K_5:
+                i = 6
+                j = 0
+                delete(screen, screenCenter, screenColor)
+                drawMouthUpset(screen, screenCenter, faceColor)
+                drawCircleEyes(screen, screenCenter, faceColor, eyeWidth)
+            elif event.key == pygame.K_6:
+                i = 5
+                j = 4
+                delete(screen, screenCenter, screenColor)
+                drawMouthSurprised(screen, screenCenter, faceColor)
+                drawShockedEyes(screen, screenCenter, faceColor, eyeWidth)
+            elif event.key == pygame.K_7:
+                i = 8
+                j = 0
+                delete(screen, screenCenter, screenColor)
+                drawMouthDerpy(screen, screenCenter, faceColor)
+                drawCircleEyes(screen, screenCenter, faceColor, eyeWidth)
+            elif event.key == pygame.K_8:
+                i = 7
+                j = 0
+                delete(screen, screenCenter, screenColor)
+                drawMouthSmile(screen, screenCenter, faceColor)
+                drawCircleEyes(screen, screenCenter, faceColor, eyeWidth)
+            elif event.key == pygame.K_9:
+                i = 3
+                j = 2
+                delete(screen, screenCenter, screenColor)
+                drawMouthNeutral(screen, screenCenter, faceColor)
+                drawDeadInsideEyes(screen, screenCenter, faceColor, eyeWidth)
+            elif event.key == pygame.K_0:
+                i = 3
+                j = 3
+                delete(screen, screenCenter, screenColor)
+                drawMouthNeutral(screen, screenCenter, faceColor)
+                drawLineEyes(screen, screenCenter, faceColor, eyeWidth)
+            elif event.key == pygame.K_UP:
+                if expressions[i] == "derpy":
+                    delete(screen, screenCenter, screenColor)
+                    changeEyes(screen, eye_types[j], screenCenter, faceColor, screenColor, eyeWidth)
+                elif expressions[i] == "frog":
+                    delete(screen, screenCenter, screenColor)
+                    changeEyes(screen, eye_types[j], screenCenter, faceColor, screenColor, eyeWidth)
+                i += 1
+                if i >= len(expressions):
+                    i = 0
+                changeMouth(screen, expressions[i], screenCenter, faceColor, screenColor)
+            elif event.key == pygame.K_DOWN:
+                if expressions[i] == "derpy":
+                    delete(screen, screenCenter, screenColor)
+                    changeEyes(screen, eye_types[j], screenCenter, faceColor, screenColor, eyeWidth)
+                elif expressions[i] == "frog":
+                    delete(screen, screenCenter, screenColor)
+                    changeEyes(screen, eye_types[j], screenCenter, faceColor, screenColor, eyeWidth)
+                i -= 1
+                if i < 0:
+                    i = len(expressions) - 1
+                changeMouth(screen, expressions[i], screenCenter, faceColor, screenColor)
+            elif event.key == pygame.K_RIGHT:
+                j += 1
+                if j >= len(eye_types):
+                    j = 0
+                changeEyes(screen, eye_types[j], screenCenter, faceColor, screenColor, eyeWidth)
+            elif event.key == pygame.K_LEFT:
+                j -= 1
+                if j < 0:
+                    j = len(eye_types) - 1
+                changeEyes(screen, eye_types[j], screenCenter, faceColor, screenColor, eyeWidth)
+            elif event.key == pygame.K_SPACE:
+                changeEyes(screen, "neutral", screenCenter, faceColor, screenColor, eyeWidth)
+                pygame.display.update()
+                time.sleep(.25)
+                changeEyes(screen, eye_types[j], screenCenter, faceColor, screenColor, eyeWidth)
+            elif event.key == pygame.K_t:
+                talking = not talking
+    if talking and tracker%talkingSpeed == 0:
+        talk(screen, screenCenter, faceColor, screenColor)
+    elif not talking:
+        changeMouth(screen, expressions[i], screenCenter, faceColor, screenColor)
+    tracker += 1
     pygame.display.update()
-    time.sleep(.1)
     clock.tick(60)
 pygame.quit()
