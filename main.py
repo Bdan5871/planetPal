@@ -298,15 +298,16 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GRAY = (50, 50, 50)
 ORANGE = (255, 128, 0)
-LIGHTBLUE = (25, 200, 255)
+LIGHTBLUE = (35, 160, 220)
 PURPLEBLUE = (50, 100, 255)
 DARKBLUE = (0, 100, 255)
 LIGHTGREEN = (0, 255, 100)
+PINK = (255, 141, 161)
 
 screenCenter = (width/2, height/2)
 
 screenColor = LIGHTBLUE
-faceColor = GRAY
+faceColor = BLACK
 
 screen, clock = initWindow(width, height, screenColor)
 
