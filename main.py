@@ -164,7 +164,7 @@ def drawMouthUpset(screen, center, color, width):
 
 def drawMouthSurprised(screen, center, color, width):
     radius = 100
-    pygame.draw.circle(screen, color, (center[0], center[1]+100+radius), radius, width)
+    pygame.draw.circle(screen, color, (center[0], center[1]+100+radius), radius, 0)
 
 
 def talk(screen, center, color, screenColor, width):
@@ -346,46 +346,46 @@ while running:
                 drawMouthHappy(screen, screenCenter, faceColor, mouthWidth)
                 drawVerticalLineEyes(screen, screenCenter, faceColor, eyeWidth)
             elif event.key == pygame.K_2:
-                i = 1
+                i = 0
                 j = 0
                 delete(screen, screenCenter, screenColor)
-                drawMouthSad(screen, screenCenter, faceColor, mouthWidth)
+                drawMouthHappy(screen, screenCenter, faceColor, mouthWidth)
                 drawCircleEyes(screen, screenCenter, faceColor, eyeWidth)
             elif event.key == pygame.K_3:
-                i = 3
-                j = 3
-                delete(screen, screenCenter, screenColor)
-                drawMouthAngry(screen, screenCenter, faceColor, mouthWidth)
-                drawAngryEyes(screen, screenCenter, faceColor, eyeWidth)
-            elif event.key == pygame.K_4:
-                i = 4
-                j = 0
-                delete(screen, screenCenter, screenColor)
-                drawMouthFrogOriginal(screen, screenCenter, faceColor, mouthWidth)
-                drawCircleEyes(screen, screenCenter, faceColor, eyeWidth)
-            elif event.key == pygame.K_5:
-                i = 6
-                j = 0
-                delete(screen, screenCenter, screenColor)
-                drawMouthUpset(screen, screenCenter, faceColor, mouthWidth)
-                drawCircleEyes(screen, screenCenter, faceColor, eyeWidth)
-            elif event.key == pygame.K_6:
                 i = 5
-                j = 4
+                j = 0
                 delete(screen, screenCenter, screenColor)
                 drawMouthSurprised(screen, screenCenter, faceColor, mouthWidth)
-                drawShockedEyes(screen, screenCenter, faceColor, eyeWidth)
-            elif event.key == pygame.K_7:
-                i = 8
-                j = 0
-                delete(screen, screenCenter, screenColor)
-                drawMouthDerpy(screen, screenCenter, faceColor, mouthWidth)
                 drawCircleEyes(screen, screenCenter, faceColor, eyeWidth)
-            elif event.key == pygame.K_8:
+            elif event.key == pygame.K_4:
+                i = 7
+                j = 5
+                delete(screen, screenCenter, screenColor)
+                drawMouthSmile(screen, screenCenter, faceColor, mouthWidth)
+                drawVerticalLineEyes(screen, screenCenter, faceColor, eyeWidth)
+            elif event.key == pygame.K_5:
                 i = 7
                 j = 0
                 delete(screen, screenCenter, screenColor)
                 drawMouthSmile(screen, screenCenter, faceColor, mouthWidth)
+                drawCircleEyes(screen, screenCenter, faceColor, eyeWidth)
+            elif event.key == pygame.K_6:
+                i = 3
+                j = 0
+                delete(screen, screenCenter, screenColor)
+                drawMouthNeutral(screen, screenCenter, faceColor, mouthWidth)
+                drawCircleEyes(screen, screenCenter, faceColor, eyeWidth)
+            elif event.key == pygame.K_7:
+                i = 3
+                j = 3
+                delete(screen, screenCenter, screenColor)
+                drawMouthNeutral(screen, screenCenter, faceColor, mouthWidth)
+                drawLineEyes(screen, screenCenter, faceColor, eyeWidth)
+            elif event.key == pygame.K_8:
+                i = 6
+                j = 0
+                delete(screen, screenCenter, screenColor)
+                drawMouthUpset(screen, screenCenter, faceColor, mouthWidth)
                 drawCircleEyes(screen, screenCenter, faceColor, eyeWidth)
             elif event.key == pygame.K_9:
                 i = 3
@@ -394,11 +394,11 @@ while running:
                 drawMouthNeutral(screen, screenCenter, faceColor, mouthWidth)
                 drawDeadInsideEyes(screen, screenCenter, faceColor, eyeWidth)
             elif event.key == pygame.K_0:
-                i = 3
-                j = 3
+                i = 7
+                j = 2
                 delete(screen, screenCenter, screenColor)
-                drawMouthNeutral(screen, screenCenter, faceColor, mouthWidth)
-                drawLineEyes(screen, screenCenter, faceColor, eyeWidth)
+                drawMouthSmile(screen, screenCenter, faceColor, mouthWidth)
+                drawDeadInsideEyes(screen, screenCenter, faceColor, eyeWidth)
             elif event.key == pygame.K_UP:
                 if expressions[i] == "derpy":
                     delete(screen, screenCenter, screenColor)
